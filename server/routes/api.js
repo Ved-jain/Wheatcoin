@@ -112,6 +112,11 @@ router.get('/prices', async (req, res) => {
       let reasoning = 'Awaiting AI decision...';
       let probabilities = { HOLD: 0.33, 'SELL 50%': 0.33, 'SELL 100%': 0.34 };
 
+      let sellPercentage = 0;
+      let copilotTip = '';
+      let urgency = 'MEDIUM';
+      let copilotEnabled = false;
+
       try {
         const aiResponse = await fetchFn(`${ML_SERVICE_URL}/predict_action`, {
           method: 'POST',
@@ -120,7 +125,9 @@ router.get('/prices', async (req, res) => {
             net_earning: trueProfit, 
             distance_km: distance,
             perishability: perishability,
-            days_in_storage: daysInStorage
+            days_in_storage: daysInStorage,
+            crop_name: item.crop,
+            mandi_name: item.mandiName
           })
         });
         
@@ -131,19 +138,27 @@ router.get('/prices', async (req, res) => {
           confidencePct = aiData.confidence_pct || confidencePct;
           reasoning = aiData.reasoning || reasoning;
           probabilities = aiData.probabilities || probabilities;
+          sellPercentage = aiData.sell_percentage !== undefined ? aiData.sell_percentage : (recommendation.includes('100%') ? 100 : recommendation.includes('50%') ? 50 : 0);
+          copilotTip = aiData.copilot_tip || reasoning;
+          urgency = aiData.urgency || 'MEDIUM';
+          copilotEnabled = aiData.copilot_enabled || false;
         }
       } catch (e) {
         // Fallback rule if ML microservice is temporarily offline
         if (perishability >= 8 && daysInStorage >= 3) {
           recommendation = 'SELL 100%';
+          sellPercentage = 100;
           reasoning = 'Urgent: High perishability crop reaching shelf-life limit.';
         } else if (trueProfit > 2400) {
           recommendation = 'SELL 50%';
+          sellPercentage = 50;
           reasoning = 'Favorable price margin. Liquidate partial batch to hedge.';
         } else {
           recommendation = 'HOLD';
+          sellPercentage = 0;
           reasoning = 'Low net margin after transport deduction. Retain stock.';
         }
+        copilotTip = reasoning;
       }
 
       results.push({
@@ -155,7 +170,11 @@ router.get('/prices', async (req, res) => {
         confidence,
         confidencePct,
         probabilities,
-        reasoning
+        reasoning,
+        sellPercentage,
+        copilotTip,
+        urgency,
+        copilotEnabled
       });
     }
 
