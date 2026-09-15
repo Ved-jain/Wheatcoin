@@ -32,3 +32,17 @@ def calculate_transport_and_cess(distance_km: float, gross_price: float, cess_ra
     mandi_cess = gross_price * cess_rate
     return transport_cost, mandi_cess
 
+def calculate_freshness_adjusted_net(gross_price: float, transport_cost: float, mandi_cess: float, 
+                                     perishability: int, days_in_storage: int) -> float:
+    """
+    Deducts freight logistics, cess, and perishable shelf-life decay from gross price.
+    Decay model: perishability * 0.006 per day stored (capped at 85% total loss).
+    """
+    decay_rate_per_day = perishability * 0.006
+    total_decay_loss = min(0.85, decay_rate_per_day * days_in_storage)
+    
+    base_net = max(0.0, gross_price - transport_cost - mandi_cess)
+    freshness_adjusted_net = round(float(base_net * (1.0 - total_decay_loss)), 2)
+    return freshness_adjusted_net
+
+
