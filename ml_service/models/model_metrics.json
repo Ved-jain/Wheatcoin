@@ -2,55 +2,55 @@
   "model_architecture": "RandomForestClassifier(n_estimators=100, max_depth=7)",
   "train_samples": 2800,
   "test_samples": 700,
-  "test_accuracy": 0.9329,
-  "f1_macro": 0.928,
-  "f1_weighted": 0.9327,
-  "cv_mean_accuracy": 0.9396,
-  "cv_std_accuracy": 0.0072,
+  "test_accuracy": 0.96,
+  "f1_macro": 0.9535,
+  "f1_weighted": 0.9602,
+  "cv_mean_accuracy": 0.9304,
+  "cv_std_accuracy": 0.0074,
   "cv_folds": [
+    0.9339,
     0.9357,
-    0.9411,
-    0.9286,
-    0.9429,
-    0.95
+    0.9304,
+    0.9357,
+    0.9161
   ],
   "feature_importances": [
     {
       "feature": "days_in_storage",
-      "importance": 0.5907,
-      "percentage": 59.1
-    },
-    {
-      "feature": "perishability",
-      "importance": 0.2044,
-      "percentage": 20.4
+      "importance": 0.5363,
+      "percentage": 53.6
     },
     {
       "feature": "net_earning",
-      "importance": 0.1835,
-      "percentage": 18.4
+      "importance": 0.2562,
+      "percentage": 25.6
+    },
+    {
+      "feature": "perishability",
+      "importance": 0.1699,
+      "percentage": 17.0
     },
     {
       "feature": "distance_km",
-      "importance": 0.0215,
-      "percentage": 2.1
+      "importance": 0.0376,
+      "percentage": 3.8
     }
   ],
   "confusion_matrix": [
     [
-      235,
-      3,
-      4
+      169,
+      4,
+      2
     ],
     [
-      17,
+      8,
       152,
-      5
+      3
     ],
     [
       7,
-      11,
-      266
+      4,
+      351
     ]
   ],
   "class_names": [
@@ -60,36 +60,37 @@
   ],
   "classification_report": {
     "HOLD": {
-      "precision": 0.9073359073359073,
-      "recall": 0.9710743801652892,
-      "f1-score": 0.93812375249501,
-      "support": 242.0
+      "precision": 0.9184782608695652,
+      "recall": 0.9657142857142857,
+      "f1-score": 0.9415041782729805,
+      "support": 175.0
     },
     "SELL 50%": {
-      "precision": 0.9156626506024096,
-      "recall": 0.8735632183908046,
-      "f1-score": 0.8941176470588236,
-      "support": 174.0
+      "precision": 0.95,
+      "recall": 0.9325153374233128,
+      "f1-score": 0.9411764705882353,
+      "support": 163.0
     },
     "SELL 100%": {
-      "precision": 0.9672727272727273,
-      "recall": 0.9366197183098591,
-      "f1-score": 0.9516994633273703,
-      "support": 284.0
+      "precision": 0.9859550561797753,
+      "recall": 0.9696132596685083,
+      "f1-score": 0.9777158774373259,
+      "support": 362.0
     },
-    "accuracy": 0.9328571428571428,
+    "accuracy": 0.96,
     "macro avg": {
-      "precision": 0.9300904284036814,
-      "recall": 0.9270857722886511,
-      "f1-score": 0.9279802876270681,
+      "precision": 0.9514777723497801,
+      "recall": 0.9559476276020357,
+      "f1-score": 0.9534655087661806,
       "support": 700.0
     },
     "weighted avg": {
-      "precision": 0.933722921893662,
-      "recall": 0.9328571428571428,
-      "f1-score": 0.9326929518242871,
+      "precision": 0.9607134656989322,
+      "recall": 0.96,
+      "f1-score": 0.9601544907656655,
       "support": 700.0
     }
   },
-  "trained_at": "2026-09-05 15:02:41"
+  "trained_at": "2026-09-16 01:27:23",
+  "dataset_source": "Real Agmarknet Mandi Data (Data.gov.in)"
 }
