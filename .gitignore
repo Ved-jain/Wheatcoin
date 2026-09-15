@@ -4,4 +4,9 @@ server/node_modules/
 ml_service/venv/
 __pycache__/
 .env
+.env*
+*.env
+ml_service/.env
+server/.env
 .DS_Store
+
