@@ -1,9 +1,12 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
 import numpy as np
-import os
 import json
 
 app = FastAPI(title="KisanMandi Explainable AI Microservice", version="2.0.0")

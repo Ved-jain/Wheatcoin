@@ -10,6 +10,12 @@ import os
 import json
 import re
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 # Support official google-genai SDK
 try:
     from google import genai
@@ -99,11 +105,26 @@ Respond ONLY in valid raw JSON with this exact structure:
   "urgency": "string"
 }}"""
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
+        # Try available production models
+        models_to_try = ["gemini-3-flash-preview", "gemini-flash-latest", "gemini-2.5-flash"]
+        response = None
+        
+        for m_name in models_to_try:
+            try:
+                response = client.models.generate_content(
+                    model=m_name,
+                    contents=prompt
+                )
+                if response and response.text:
+                    break
+            except Exception:
+                continue
+                
+        if not response or not response.text:
+            raise RuntimeError("Gemini models could not be reached.")
+
         text = response.text.strip()
+
         
         if text.startswith("```"):
             text = re.sub(r"^```(?:json)?\n", "", text)
