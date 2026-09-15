@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   AlertCircle,
   HelpCircle,
-  BarChart3
+  BarChart3,
+  Sparkles
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -162,14 +163,17 @@ function App() {
                 </thead>
                 <tbody>
                   {mandis.map((mandi, idx) => {
+                    const sellPct = mandi.sellPercentage !== undefined ? mandi.sellPercentage : (mandi.recommendation.includes('100%') ? 100 : mandi.recommendation.includes('50%') ? 50 : 0);
                     let badgeClass = 'hold';
-                    if (mandi.recommendation.includes('100%')) badgeClass = 'sell';
-                    if (mandi.recommendation.includes('50%')) badgeClass = 'sell-partial'; 
+                    if (sellPct >= 75) badgeClass = 'sell';
+                    else if (sellPct > 0) badgeClass = 'sell-partial'; 
                     
+                    const actionLabel = sellPct === 0 ? 'HOLD (0%)' : `SELL ${sellPct}%`;
                     const conf = mandi.confidencePct ? `${mandi.confidencePct}%` : '92%';
+                    const hasCopilot = Boolean(mandi.copilotEnabled);
                     
                     return (
-                      <tr key={idx} title={mandi.reasoning}>
+                      <tr key={idx} title={mandi.copilotTip || mandi.reasoning}>
                         <td>
                           <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{mandi.mandiName}</div>
                           <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
@@ -183,17 +187,31 @@ function App() {
                           <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400, display: 'block' }}>/quintal</span>
                         </td>
                         <td>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-start' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-start', minWidth: '220px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span className={`badge ${badgeClass}`}>
-                                {mandi.recommendation}
+                              <span className={`badge ${badgeClass}`} style={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                {hasCopilot && <Sparkles size={12} color="#fbbf24" />}
+                                {actionLabel}
                               </span>
                               <span className="confidence-chip" title="Model Prediction Confidence">
                                 {conf} conf.
                               </span>
                             </div>
-                            <span style={{ fontSize: '11px', color: 'var(--text-muted)', maxWidth: '280px', lineHeight: 1.3 }}>
-                              {mandi.reasoning}
+
+                            {/* Dynamic Allocation Visual Bar */}
+                            <div style={{ width: '100%', maxWidth: '210px', height: '4px', background: '#e2e8f0', borderRadius: '2px', overflow: 'hidden' }}>
+                              <div 
+                                style={{ 
+                                  width: `${sellPct}%`, 
+                                  height: '100%', 
+                                  background: sellPct >= 75 ? '#ef4444' : sellPct > 0 ? '#f59e0b' : '#10b981',
+                                  transition: 'width 0.4s ease'
+                                }} 
+                              />
+                            </div>
+
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)', maxWidth: '280px', lineHeight: 1.35 }}>
+                              {mandi.copilotTip || mandi.reasoning}
                             </span>
                           </div>
                         </td>
